@@ -1,0 +1,10 @@
+--- a/include/linux/usb.h	2023-06-28 02:28:17.000000000 -0600
++++ b/include/linux/usb.h	2026-10-09 22:48:31.271799374 -0600
+@@ -642,6 +642,7 @@
+ 	enum usb_device_speed	speed;
+ 	unsigned int		rx_lanes;
+ 	unsigned int		tx_lanes;
++	unsigned int		ingenic_vendor_pad;
+ 
+ 	struct usb_tt	*tt;
+ 	int		ttport;

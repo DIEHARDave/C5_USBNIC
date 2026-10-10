@@ -1,0 +1,11 @@
+--- a/arch/mips/Kconfig	2023-06-28 02:28:17.000000000 -0600
++++ b/arch/mips/Kconfig	2026-10-09 22:52:44.162627480 -0600
+@@ -559,7 +559,7 @@
+ 	select MIPS_BONITO64
+ 	select MIPS_CPU_SCACHE
+ 	select MIPS_GIC
+-	select MIPS_L1_CACHE_SHIFT_6
++	# ingenic: 32-byte L1 lines (was: select MIPS_L1_CACHE_SHIFT_6)
+ 	select MIPS_MSC
+ 	select PCI_GT64XXX_PCI0
+ 	select SMP_UP if SMP
