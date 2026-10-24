@@ -34,15 +34,22 @@ fi
 
 ip link set eth0 up
 PIDFILE=/var/run/udhcpc.eth0.pid
-if [ -f $PIDFILE ] && kill -0 "$(cat $PIDFILE)" 2>/dev/null; then
-	echo "udhcpc already running for eth0"
-else
-	# The stock dhcpcd 8.0.3 segfaults on this interface; busybox udhcpc keeps the lease renewed
-	udhcpc -i eth0 -b -R -p $PIDFILE -s "$DIR/udhcpc-eth0.sh" -x hostname:"$(hostname)"
-fi
+
+# The stock dhcpcd 8.0.3 segfaults on this interface; busybox udhcpc keeps the lease renewed.
+# Flashforge's firmwareExe runs "killall udhcpc" while it manages Wi-Fi, which also killed
+# this one and released the Ethernet address. Started as "busybox udhcpc" the process is
+# named busybox, so that leaves it alone; the loop below restarts it if it dies anyway.
+start_udhcpc()
+{
+	[ -f $PIDFILE ] && kill -0 "$(cat $PIDFILE)" 2>/dev/null && return 0
+	[ -n "$1" ] && echo "$(date) $1"
+	busybox udhcpc -i eth0 -b -R -p $PIDFILE -s "$DIR/udhcpc-eth0.sh" -x hostname:"$(hostname)"
+}
+
+start_udhcpc
 
 # Wi-Fi routes are added with metric 0 by the stock network setup; move them behind Ethernet.
-# Re-checked every minute in case Wi-Fi is reconnected and its routes are re-added.
+# Re-checked every 10 seconds in case Wi-Fi is reconnected and its routes are re-added.
 deprioritize_wlan()
 {
 	ip -4 route show dev wlan0 2>/dev/null | grep -v ' metric ' | while read -r route; do
@@ -52,6 +59,7 @@ deprioritize_wlan()
 }
 
 while true; do
+	start_udhcpc "udhcpc for eth0 was not running; restarted"
 	deprioritize_wlan
-	sleep 60
+	sleep 10
 done
