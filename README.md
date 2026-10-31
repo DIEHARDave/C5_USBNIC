@@ -1,5 +1,7 @@
 # C5_USBNIC
 
+> **Parts:** the printers, boards, readers and other gear that go with this project are listed at [projects.die-hard.net/gear](https://projects.die-hard.net/gear) (Amazon affiliate links).
+
 Wired Ethernet for the **Flashforge Creator 5 Pro** through a USB 3 gigabit adapter based on the
 Realtek **RTL8153** (USB ID `0bda:8153`), using the mainline `r8152` driver built for the printer's
 vendor kernel. Wi-Fi keeps working alongside it.
